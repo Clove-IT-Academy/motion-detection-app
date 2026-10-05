@@ -1,6 +1,6 @@
 # Motion Detection App: Development Plan
 
-Status: planning complete; application implementation has not started.
+Status: version 0.1.0 implementation candidate complete; camera-independent validation passed; real-camera acceptance pending permission and manual checks (2026-10-05).
 Created: 2026-10-04.
 Source: [Motion Detection System Architecture](Motion_Detection_System_Architecture.pdf), all six pages, sections 1-9.
 
@@ -14,7 +14,7 @@ The architecture defines product requirements. Defaults, interfaces, file names 
 
 ### Current project baseline
 
-The project currently contains the architecture PDF, `.gitignore`, a local `venv/`, and Git metadata. There is no application source, dependency manifest, README, or test suite. The existing virtual environment is local setup, not evidence of a reproducible installation. Preserve the architecture and existing user files.
+Original planning baseline (2026-10-04): architecture PDF, `.gitignore`, local `venv/`, and Git metadata only. As of 2026-10-05, the source package, pinned dependencies, README, tests, and validation/release checklists are implemented. Fresh-venv installation is verified. Preserve the architecture and existing user files.
 
 ## 2. Version 1 scope and acceptance requirements
 
@@ -304,9 +304,9 @@ Use generated arrays for fixtures. Distinguish genuinely small noise from blur-e
 
 There is no committed calendar estimate: camera/backend behavior and target-platform availability affect effort. The gates below define completion more reliably than dates.
 
-- [ ] M1: Reproducible foundation and configuration - Steps 1-2.
+- [x] M1: Reproducible foundation and configuration - Steps 1-2.
 - [ ] M2: Reliable camera preview and exit - Step 3.
-- [ ] M3: Camera-independent detector passes synthetic tests - Step 4.
+- [x] M3: Camera-independent detector passes synthetic tests - Step 4.
 - [ ] M4: Complete motion UI and alert timing - Step 5.
 - [ ] M5: Failure handling and privacy verified - Step 6.
 - [ ] M6: Calibrated and measured on target hardware - Step 7.
@@ -314,7 +314,7 @@ There is no committed calendar estimate: camera/backend behavior and target-plat
 - [ ] M8: Student-ready version 1 release and handoff - Step 9.
 - [ ] M9: Maintenance owner and process established - Step 10.
 
-For each completed milestone record: implementation revision, delivered files, checks executed, environment, results, limitations, and the next step. Tests and validation in this document are planned, not already executed against an application.
+For each completed milestone record: implementation revision, delivered files, checks executed, environment, results, limitations, and the next step. The step descriptions specify required checks. See `docs/VALIDATION_RESULTS.md` for executed checks and their limits; unchecked milestones still have outstanding acceptance criteria.
 
 ## 8. Open decisions and risk handling
 
@@ -347,3 +347,31 @@ Validation required:
 Read the architecture PDF and this plan before implementing. Inspect actual source, repository instructions, and Git state; do not assume that planned files already exist or that checklist status is current. Start with the earliest incomplete milestone and implement its concrete tasks and exit checks. Preserve module boundaries and the local-only privacy scope. Record tested versions rather than choosing dependency versions from memory.
 
 Report what changed, what checks actually passed, what remains unverified, and which milestone comes next. Update this document when a decision or milestone changes. Do not add unrelated features to complete a step. Avoid recording/uploading webcam content for debugging. Keep hardware/platform validation honest and separate from camera-free automated evidence.
+
+## 10. Implementation update - 2026-10-05
+
+Version 0.1.0 implements Steps 1-6 source behavior and the documentation for
+Steps 7-10. M1 and M3 are complete: reproducible environment/configuration and
+synthetic detector checks passed. Other milestones remain open where their
+exit criteria require real-camera or student validation. Do not interpret the
+implemented source as full hardware acceptance.
+
+Decisions:
+- Reuse project venv with Python 3.14.7; pin latest compatible stable OpenCV
+  Python 5.0.0.93, NumPy 2.5.3, and pytest 9.1.1. Fresh venv checks passed.
+- Require Python >=3.14 for this tested source candidate; older versions are
+  not claimed as supported. Desktop webcam compatibility is still pending.
+- Keep planned defaults and algorithm; calibration remains pending. Bound
+  internal odd kernel sizes to 31 and capture to 32 megapixels/8192 per axis
+  before native processing to reject malformed frames without excessive work.
+- Reject Wayland because OpenCV cannot fulfill window-close inspection there.
+  A property error after polling is treated as native close, matching backends
+  that throw on destroyed windows. Manual backend validation remains necessary.
+- Treat Ctrl+C as normal user shutdown (exit 0); runtime/cleanup failures exit 1.
+- Native Cocoa synthetic preview passed. Camera-index-0 smoke was blocked by
+  macOS camera authorization; no real-camera acceptance is claimed.
+
+Delivered: src/motion_app, tests, pyproject.toml, requirements-dev.txt, README,
+manual checklist, validation record, and release checklist. Next gate: grant
+camera permission and complete real-camera calibration/quit/resource checks.
+Maintenance owner and another-student handoff remain open.

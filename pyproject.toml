@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools==84.0.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "webcam-motion-app"
+version = "0.1.0"
+description = "Local in-memory webcam motion detection"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = ["numpy==2.5.3", "opencv-python==5.0.0.93"]
+
+[project.optional-dependencies]
+dev = ["pytest==9.1.1"]
+
+[project.scripts]
+motion-app = "motion_app.main:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+filterwarnings = ["error"]
